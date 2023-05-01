@@ -1,12 +1,13 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CollectionTest {
+public class CollectionMapTest {
 
     private Map<String, Double> employeeSalaries = new HashMap<>();
 
@@ -66,9 +67,8 @@ public class CollectionTest {
 
     // Group employees based on their salary ranges
     @Test
-    void group_employees_based_on_their_salary_ranges() {
-        // Group employees based on their salary ranges
-        Map<String, List<String>> salaryRanges = employeeSalaries.entrySet().stream()
+    void grouping_by() {
+        Map<String, List<Map.Entry<String, Double>>> collect = employeeSalaries.entrySet().stream()
                 .collect(Collectors.groupingBy(entry -> {
                     double salary = entry.getValue();
                     if (salary < 60000.0) {
@@ -78,11 +78,43 @@ public class CollectionTest {
                     } else {
                         return "High";
                     }
-                }, Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
-        System.out.println("Employees grouped by salary range: " + salaryRanges);
-
+                }));
         employeeSalaries.forEach((key, value)
                 -> System.out.println(key + "'s salary: " + value));
+    }
+
+    // Group employees based on their salary ranges
+    @Test
+    void mappin() {
+        employeeSalaries.entrySet().stream().collect(Collectors.mapping(Map.Entry::getKey, Collectors.toList()));
+        employeeSalaries.forEach((key, value)
+                -> System.out.println(key + "'s salary: " + value));
+    }
+
+    @Test
+    void partition_by() {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Map<Boolean, List<Integer>> evenOddMap = numbers.stream()
+                .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+        System.out.println(evenOddMap);
+    }
+
+    @Test
+    void group_by_list() {
+        List<String> words = Arrays.asList("hello", "world", "java", "programming", "language");
+
+        Map<Integer, List<String>> lengthMap = words.stream()
+                .collect(Collectors.groupingBy(String::length));
+        System.out.println(lengthMap);
+    }
+    @Test
+    void mapping() {
+        List<String> words = Arrays.asList("hello", "world", "java", "programming", "language");
+
+        Map<Integer, List<Character>> characterMap = words.stream()
+                .collect(Collectors.groupingBy(String::length, Collectors.mapping(s -> s.charAt(0), Collectors.toList())));
+
+        System.out.println(characterMap);
     }
 
 }
